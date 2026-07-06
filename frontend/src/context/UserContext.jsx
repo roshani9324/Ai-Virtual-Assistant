@@ -8,6 +8,10 @@ import { useState,useEffect } from "react";
 const UserContext = ({ children }) => {
   const serverUrl = "http://localhost:8000";
   const [userData, setUserData] = useState(null);
+  const [frontendImage, setFrontendImage] = useState(null);
+    const[backendImage,setBackendImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+
 
   const handleCurrentUSer = async () => {
     try {
@@ -29,6 +33,12 @@ const UserContext = ({ children }) => {
     serverUrl,
     userData, // ye add kar
     setUserData,
+    backendImage,
+    setBackendImage,
+    frontendImage,
+    setFrontendImage,
+    selectedImage,
+    setSelectedImage,
   };
   return (
     <userDataContext.Provider value={value}>

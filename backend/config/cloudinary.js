@@ -1,7 +1,6 @@
-import React from 'react'
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-const uploadOnCloudinary = (filePath) => {
+const uploadOnCloudinary = async(filePath) => {
   // Configuration
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // Click 'View API Keys' above to copy your Cloud name
@@ -15,7 +14,7 @@ const uploadOnCloudinary = (filePath) => {
           filePath,
        )
        fs.unlinkSync(filePath)
-       return uploadREsult.secure_url;
+       return uploadResult.secure_url;
     }catch(err){
              fs.unlinkSync(filePath)
              return res.status(500).json({message: "Error uploading file to Cloudinary", error: err.message});

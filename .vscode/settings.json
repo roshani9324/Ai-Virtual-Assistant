@@ -1,5 +1,14 @@
 {
     "cSpell.words": [
         "connectdb"
-    ]
+    ],
+     "files.watcherExclude": {
+    "**/node_modules/**": true
+  },
+  "files.exclude": {
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/node_modules": true
+  }
 }
