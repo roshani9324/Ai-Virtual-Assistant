@@ -4,13 +4,16 @@ import { useContext } from "react";
 import { userDataContext } from "../context/UserContext";
 import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 const Customize2 = () => {
   const { userData, backendImage, selectedImage, setUserData, serverUrl } =
     useContext(userDataContext);
+    const navigate = useNavigate();
   const [assistantName, setAssistantName] = useState(
-    userData?.assistantName || "",
-  );
+    userData?.assistantName || "");
+
+    const [loading, setLoading] = useState(false);
   // const navigate = useNavigate();
   const handleupdateAssistant = async () => {
     try {
@@ -35,7 +38,9 @@ const Customize2 = () => {
     }
   };
   return (
-    <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px] ">
+    <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px] relative ">
+      <IoArrowBackOutline className="cursor-pointer absolute top-[30px] left-[30px] text-white w-[25px] h-[25px]" onClick={()=>navigate("/customize")}
+      />
       <h1 className="m-[40px] text-white text-[30px] text-center">
         Enter Your <span className="text-blue-200"> Assistant Name</span>
       </h1>
@@ -54,10 +59,10 @@ const Customize2 = () => {
           className="min-w-[300px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px] cursor-pointer"
           onClick={() => {
             handleupdateAssistant();
-            ;
           }}
+          disabled={loading}
         >
-          finally create your assistant
+          {!loading ? " finally create your assistant" : "Loading..."}
         </button>
       )}
     </div>

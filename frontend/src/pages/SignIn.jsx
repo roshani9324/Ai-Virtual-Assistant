@@ -28,7 +28,7 @@ const SignIn = () => {
       );
       console.log(result);
       setLoading(false);
-      setUserData(result.data);
+      setUserData(result.data.user);
       navigate("/");
     } catch (error) {
       console.log(error);

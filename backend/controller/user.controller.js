@@ -26,8 +26,10 @@ export const updateAssistant=async(req,res)=>{
         assistantImage=imageUrl;
     }
 
-    const user =await User.findByIdAndUpdate(req.userId,{assistantName,assistantImage},{new:true}).select("-password");
-    return res.status(200).json({message:"Assistant updated successfully",user:updatedUser  });
+    const updatedUser = await User.findByIdAndUpdate(req.userId,{assistantName,assistantImage},{new:true}).select("-password");
+    return res
+      .status(200)
+      .json({ message: "Assistant updated successfully", updatedUser });
     
     }catch(error){
         return res

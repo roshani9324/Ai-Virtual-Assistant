@@ -8,10 +8,10 @@ import { useState,useEffect } from "react";
 const UserContext = ({ children }) => {
   const serverUrl = "http://localhost:8000";
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [frontendImage, setFrontendImage] = useState(null);
-    const[backendImage,setBackendImage] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
-
+  const [backendImage, setBackendImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleCurrentUSer = async () => {
     try {
@@ -22,6 +22,9 @@ const UserContext = ({ children }) => {
       console.log(result.data);
     } catch (err) {
       console.log(err);
+      setUserData(null);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -31,8 +34,9 @@ const UserContext = ({ children }) => {
 
   const value = {
     serverUrl,
-    userData, // ye add kar
+    userData,
     setUserData,
+    loading,
     backendImage,
     setBackendImage,
     frontendImage,
