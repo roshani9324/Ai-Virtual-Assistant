@@ -9,13 +9,14 @@ import { useNavigate } from "react-router-dom";
 const Customize2 = () => {
   const { userData, backendImage, selectedImage, setUserData, serverUrl } =
     useContext(userDataContext);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [assistantName, setAssistantName] = useState(
-    userData?.assistantName || "");
+    userData?.assistantName || "",
+  );
 
-    const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const handleupdateAssistant = async () => {
+    setLoading(true);
     try {
       let formatData = new FormData();
       formatData.append("assistantName", assistantName);
@@ -30,16 +31,19 @@ const Customize2 = () => {
         formatData,
         { withCredentials: true },
       );
+      setLoading(false);
       console.log(result.data);
       setUserData(result.data.user);
+      navigate("/");
     } catch (err) {
       console.log(err);
-      
     }
   };
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px] relative ">
-      <IoArrowBackOutline className="cursor-pointer absolute top-[30px] left-[30px] text-white w-[25px] h-[25px]" onClick={()=>navigate("/customize")}
+      <IoArrowBackOutline
+        className="cursor-pointer absolute top-[30px] left-[30px] text-white w-[25px] h-[25px]"
+        onClick={() => navigate("/customize")}
       />
       <h1 className="m-[40px] text-white text-[30px] text-center">
         Enter Your <span className="text-blue-200"> Assistant Name</span>
