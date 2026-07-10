@@ -8,6 +8,7 @@ import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRouter from "./routes/user.routes.js";
+import gemini from "./gemini.js";
 dns.setServers(["8.8.8.8"]);
 
 
@@ -25,8 +26,20 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter)
 
 
-const port=process.env.PORT||5000;
 
+
+const port=process.env.PORT||5000;
+app.get("/", async (req, res) => {
+  try {
+    let prompt = req.query.prompt;
+    let data = await gemini(prompt);
+    res.json(data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json({
+      message: err.response?.data?.error?.message || "Something went wrong",
+    });
+  }
+});
 app.get("/" ,(req,res)=>{
     res.send("Hello World")
 })
