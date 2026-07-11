@@ -30,16 +30,11 @@ app.use("/api/user", userRouter)
 
 const port=process.env.PORT||5000;
 app.get("/", async (req, res) => {
-  try {
-    let prompt = req.query.prompt;
-    let data = await gemini(prompt);
-    res.json(data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json({
-      message: err.response?.data?.error?.message || "Something went wrong",
-    });
-  }
+  let prompt = req.query.prompt;
+  let data = await gemini(prompt);
+  res.json(data);
 });
+
 // app.get("/" ,(req,res)=>{
 //     res.send("Hello World")
 // })
