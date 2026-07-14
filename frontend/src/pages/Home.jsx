@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { userDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const Home = () => {
-  const { userData, serverUrl, setUserData } = useContext(userDataContext);
+  const { userData, serverUrl, setUserData, getGeminiResponse } =
+    useContext(userDataContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      const result = await axios.get(`${serverUrl}/api/auth./logout`, {
+      const result = await axios.get(`${serverUrl}/api/auth/logout`, {
         withCredentials: true,
       });
       setUserData(null);
@@ -19,7 +20,36 @@ const Home = () => {
 
       console.log(error);
     }
+
   };
+  const speak=(text)=>{
+    const utterence=new SpeechSynthesisUtterance(text)
+    window.SpeechSynthesis.speak(utterence)
+  }
+  useEffect(()=>{
+    const SpeechRecognition=window.SpeechRecognition || window.webkitSpeechRecognition
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous=true;
+    recognition.lang='en-US';
+
+    recognition.onresult=async(e)=>{
+      const transcript=e.results[e.results.length-1][0].transcript.trim()
+      console.log("heard : "+ transcript)
+
+       if (transcript.toLowerCase().includes(userData.assistantName.toLowerCase())) {
+          const data= await getGeminiResponse(transcript)
+          console.log(data)
+          speak(data)
+       }
+    }
+
+    recognition.start();
+   
+
+
+  },[])
+
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#02023d] flex justify-center items-center flex-col gap-[15px]  ">
       <button

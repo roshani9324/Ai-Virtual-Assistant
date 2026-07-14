@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  askToAssistant,
   getCurrentUser,
   updateAssistant,
 } from "../controller/user.controller.js";
@@ -16,5 +17,6 @@ userRouter.post(
   upload.single("assistantImage"),
   updateAssistant,
 );
+userRouter.post("/asktoassistant",isAuth,askToAssistant)
 
 export default userRouter;
