@@ -12,10 +12,10 @@ const gemini = async (command,assistantName,userName) => {
     Your task is to understand the user's natural language input and respond with a JSON object like this:
 
     {
-    "type":"general"|"google_search| "youtube_search" | "youtube_play" | "get_time" |"get_day"|"get_month"|"calculator_open" |
-    "instagram_open" | "facebook_open" |"weather_show",
+    "type": "general" | "google_search" | "youtube_search" | "youtube_play" | "get_time" | "get_day" | "get_month" | "calculator_open" |
+    "instagram_open" | "facebook_open" | "weather_show",
 
-    "userInput":"<original user input>"{only remove your name from userinput if exists}
+    "userInput": "<original user input>" {only remove your name from userinput if exists}
     and agar kisi ne google ya youtube pe kuch serach karne bola hai to userInput me only vo search baala text jaye,
 
     "response":"<a short spoken response to read out loud to the user> " 
@@ -46,7 +46,7 @@ const gemini = async (command,assistantName,userName) => {
     - Only respond with the JSON object, nothing else.
 
 
-    now your userInput -${command}    `;
+    now your userInput - ${command}    `;
     
     
     const result = await axios.post(apiUrl, {
