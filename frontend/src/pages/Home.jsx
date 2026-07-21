@@ -3,14 +3,20 @@ import { useContext } from "react";
 import { userDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import aiImg from "../assets/ai.gif";
+import userImg from "../assets/user.gif";
 const Home = () => {
   const { userData, serverUrl, setUserData, getGeminiResponse } =
     useContext(userDataContext);
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
+
+  const [userText, setUserText] = useState("");
+  const [aiText, setAiText] = useState("");
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
   const synth = window.speechSynthesis;
+
   const handleLogout = async () => {
     try {
       const result = await axios.get(`${serverUrl}/api/auth/logout`, {
@@ -38,11 +44,19 @@ const Home = () => {
 
   const speak = (text) => {
     const utterence = new SpeechSynthesisUtterance(text);
+    utterence.lang = "hi-IN";
+
+    const voices = window.speechSynthesis.getVoices();
+    const hindiVoice = voices.find((v) => v.lang === "hi-IN");
+    if (hindiVoice) {
+      utterence.voice = hindiVoice;
+    }
 
     isSpeakingRef.current = true;
     utterence.onend = () => {
+      setAiText("")
       isSpeakingRef.current = false;
-      startRecognition()
+      startRecognition();
     };
     synth.speak(utterence);
   };
@@ -51,7 +65,7 @@ const Home = () => {
     const { type, userInput, response } = data;
     speak(response);
 
-    if (type === "google_Search") {
+    if (type === "google_search") {
       const query = encodeURIComponent(userInput);
       window.open(`https://www.google.com/search?q=${query}`, "_blank");
     }
@@ -128,17 +142,26 @@ const Home = () => {
 
     recognition.onresult = async (e) => {
       const transcript = e.results[e.results.length - 1][0].transcript.trim();
-      console.log("heard : " + transcript);
+      //console.log("heard : " + transcript);
 
       if (
         transcript.toLowerCase().includes(userData.assistantName.toLowerCase())
       ) {
+        setAiText("")
+        setUserText(transcript);
         recognition.stop();
         isRecognizingRef.current = false;
         setListening(false);
         const data = await getGeminiResponse(transcript);
+        if (!data) {
+          console.log("No response from assistant, restarting recognition");
+          startRecognition();
+          return;
+        }
         //console.log(data);
         handleCommand(data);
+        setAiText(data.response);
+        setUserText("");
       }
     };
 
@@ -149,6 +172,7 @@ const Home = () => {
         safeRecognition();
       }
     }, 10000);
+
     return () => {
       recognition.stop();
       setListening(false);
@@ -181,6 +205,10 @@ const Home = () => {
       <h1 className="text-white text-[18px] font-semibold">
         I'm {userData?.assistantName}
       </h1>
+
+      {!aiText && <img src={userImg} alt="" className="w-[200px]" />}
+      {aiText && <img src={aiImg} alt="" className="w-[200px]" />}
+      <h1 className="text-white text-[18px] font-bold">{userText?userText:aiText?aiText:null}</h1>
     </div>
   );
 };

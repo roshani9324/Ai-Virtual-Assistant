@@ -28,7 +28,7 @@ const gemini = async (command,assistantName,userName) => {
     "Today is Tuesday", etc.
 
     Type meanings:
-    - "general" : if it's factual or informational question.
+    - "general" : if it's factual or informational question.aur agar koi aisa question puchta hai jiska answer tume pata hai usko bhi general ki category me rakho bas short answer dena
     - "google_search": if user want to search something on Google.
     - "youtube_search":if user want to search something on YouTube.
     - "youtube_play": if user want to directly play a video or song.

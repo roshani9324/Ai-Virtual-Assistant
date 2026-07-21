@@ -51,6 +51,8 @@ export const askToAssistant=async(req,res)=>{
     try{
         const{command}=req.body
         const user=await User.findById(req.userId);
+        user.history.push(command)
+        user.save()
         const userName=user.name
         const assistantName=user.assistantName
         const result = await gemini(command, assistantName, userName);
@@ -73,7 +75,7 @@ export const askToAssistant=async(req,res)=>{
                 return res.json({
                     type,
                     userInput:gemResult.userInput,
-                    response:`current date is ${moment().format("hh:mm:A")}`
+                    response:`current time  is ${moment().format("hh:mm:A")}`
                 });
             case 'get_day' :
                 return res.json({
@@ -105,6 +107,7 @@ export const askToAssistant=async(req,res)=>{
                     return res.status(400).json({response:"I didn't understand that command." })
 
         }
+        
     }
     catch(error){
      return res.status(500).json({
