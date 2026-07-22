@@ -23,7 +23,8 @@ const userSchema=new mongoose.Schema({
         type:String,
     },
     history:{
-        type:String
+        type:[String],
+        default:[]
     }
 },{
     timestamps:true

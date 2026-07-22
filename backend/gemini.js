@@ -59,7 +59,7 @@ const gemini = async (command,assistantName,userName) => {
 
     return result.data.candidates[0].content.parts[0].text // seedha reply text return kar
   } catch (err) {
-    console.log(err);
+    cconsole.log(err?.response?.data || err.message);
     
   }
 };

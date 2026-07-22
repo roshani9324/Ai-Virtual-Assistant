@@ -52,8 +52,8 @@ export const askToAssistant=async(req,res)=>{
         const{command}=req.body
         const user=await User.findById(req.userId);
         user.history.push(command)
-        user.save()
-        const userName=user.name
+user.save().catch(err => console.log("history save error:", err))  
+      const userName=user.name
         const assistantName=user.assistantName
         const result = await gemini(command, assistantName, userName);
 
@@ -91,6 +91,7 @@ export const askToAssistant=async(req,res)=>{
                 });
 
             case 'google_search':
+                
             case 'youtube_search':
             case 'youtube_play':
             case 'general' :

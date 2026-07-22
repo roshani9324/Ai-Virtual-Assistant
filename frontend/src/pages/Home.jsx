@@ -16,6 +16,7 @@ const Home = () => {
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
   const synth = window.speechSynthesis;
+  const isRecognizingRef=useRef(false)
 
   const handleLogout = async () => {
     try {
@@ -98,7 +99,6 @@ const Home = () => {
 
     recognitionRef.current = recognition;
 
-    const isRecognizingRef = { current: false };
 
     const safeRecognition = () => {
       if (!isSpeakingRef.current && !isRecognizingRef.current) {
@@ -147,7 +147,7 @@ const Home = () => {
       if (
         transcript.toLowerCase().includes(userData.assistantName.toLowerCase())
       ) {
-        setAiText("")
+        setAiText("Thinking...");
         setUserText(transcript);
         recognition.stop();
         isRecognizingRef.current = false;
@@ -208,7 +208,7 @@ const Home = () => {
 
       {!aiText && <img src={userImg} alt="" className="w-[200px]" />}
       {aiText && <img src={aiImg} alt="" className="w-[200px]" />}
-      <h1 className="text-white text-[18px] font-bold">{userText?userText:aiText?aiText:null}</h1>
+      <h1 className="text-white text-[18px] font-semibold">{userText?userText:aiText?aiText:null}</h1>
     </div>
   );
 };
