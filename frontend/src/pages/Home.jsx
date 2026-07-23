@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import aiImg from "../assets/ai.gif";
 import userImg from "../assets/user.gif";
+import { HiMenuAlt3 } from "react-icons/hi";
+import { RxCross2 } from "react-icons/rx";
+
+
 const Home = () => {
   const { userData, serverUrl, setUserData, getGeminiResponse } =
     useContext(userDataContext);
@@ -183,18 +187,24 @@ const Home = () => {
 
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#02023d] flex justify-center items-center flex-col gap-[15px]  ">
-      <button
-        onClick={handleLogout}
-        className="cursor-pointer absolute top-[20px] right-[20px] min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px] "
-      >
-        Logout
-      </button>
-      <button
-        onClick={() => navigate("/customize")}
-        className="cursor-pointer absolute top-[100px] px-[20px] py-[10px] right-[20px] min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px] "
-      >
-        Customize your Assistant
-      </button>
+      <HiMenuAlt3 className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]" />
+      <div className="absolute top-0 w-full h-full bg-[#00000053] flex flex-col gap-[20px] backdrop-blur-lg p-[20px]">
+        <RxCross2 className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]" />
+
+        <button
+          onClick={handleLogout}
+          className=" cursor-pointer absolute top-[20px] right-[20px] min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
+        >
+          Logout
+        </button>
+        <button
+          onClick={() => navigate("/customize")}
+          className=" cursor-pointer absolute top-[100px] px-[20px] py-[10px] right-[20px] min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
+        >
+          Customize your Assistant
+        </button>
+      </div>
+
       <div className=" w-[300px] h-[400px] flex justify-center items-center overflow-hidden rounded-4xl shadow-lg">
         <img
           src={userData?.assistantImage}
@@ -208,7 +218,9 @@ const Home = () => {
 
       {!aiText && <img src={userImg} alt="" className="w-[200px]" />}
       {aiText && <img src={aiImg} alt="" className="w-[200px]" />}
-      <h1 className="text-white text-[18px] font-semibold">{userText?userText:aiText?aiText:null}</h1>
+      <h1 className="text-white text-[18px] font-semibold">
+        {userText ? userText : aiText ? aiText : null}
+      </h1>
     </div>
   );
 };
