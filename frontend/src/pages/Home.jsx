@@ -248,7 +248,7 @@ const Home = () => {
       />
       <div
         className={`absolute top-0 w-full h-full 
-      bg-[#00000053]  backdrop-blur-lg p-[20px] flex lg:hidden
+      bg-[#00000053]  backdrop-blur-lg p-[20px] flex 
        flex-col gap-[20px] items-start ${ham ? "translate-x-0" : "translate-x-full"} transition-transform`}
       >
         <RxCross2
@@ -270,7 +270,7 @@ const Home = () => {
         </button>
         <div className="w-full h-[2px] bg-gray-400">
           <h1 className="text-white font-semibold text-[19px]">History</h1>
-          <div className="w-fill h-[400px] gap-[20px] overflow-y-auto flex flex-col  ">
+          <div className="w-full h-[700px]  overflow-y-auto flex flex-col  ">
             {userData.history?.map((his, index) => (
               <span key={index} className="text-gray-200 text-[18px] truncate">
                 {his}
