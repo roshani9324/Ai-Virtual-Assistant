@@ -8,20 +8,19 @@ import userImg from "../assets/user.gif";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { RxCross2 } from "react-icons/rx";
 
-
 const Home = () => {
   const { userData, serverUrl, setUserData, getGeminiResponse } =
     useContext(userDataContext);
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
-  const [ham,setHam]=useState(false)
+  const [ham, setHam] = useState(false);
 
   const [userText, setUserText] = useState("");
   const [aiText, setAiText] = useState("");
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
   const synth = window.speechSynthesis;
-  const isRecognizingRef=useRef(false)
+  const isRecognizingRef = useRef(false);
 
   const handleLogout = async () => {
     try {
@@ -38,15 +37,15 @@ const Home = () => {
     }
   };
   const startRecognition = () => {
-    if(!isSpeakingRef.curent && !isRecognizingRef.current)
-    try {
-      recognitionRef.current?.start();
-      console.log("Recognition requested to start")
-    } catch (error) {
-      if (!error.name!=="InvalidStateError") {
-        console.log("start error:", error);
+    if (!isSpeakingRef.current && !isRecognizingRef.current)
+      try {
+        recognitionRef.current?.start();
+        console.log("Recognition requested to start");
+      } catch (error) {
+        if (error.name !== "InvalidStateError") {
+          console.log("start error:", error);
+        }
       }
-    }
   };
 
   const speak = (text) => {
@@ -61,13 +60,13 @@ const Home = () => {
 
     isSpeakingRef.current = true;
     utterence.onend = () => {
-      setAiText("")
+      setAiText("");
       isSpeakingRef.current = false;
-      setTimeout(()=>{
+      setTimeout(() => {
         startRecognition();
-      },800)
+      }, 800);
     };
-    synth.cancle();
+    synth.cancel();
     synth.speak(utterence);
   };
 
@@ -106,24 +105,23 @@ const Home = () => {
 
     recognition.continuous = true;
     recognition.lang = "en-US";
-    recognition.interimResults=false
+    recognition.interimResults = false;
 
     recognitionRef.current = recognition;
-    let isMounted =true;
+    let isMounted = true;
 
-    const startTimeout =setTimeout(()=>{
-      if(isMounted && !isSpeakingRef.current && 
-        !isRecognizingRef.current){
-        try{
+    const startTimeout = setTimeout(() => {
+      if (isMounted && !isSpeakingRef.current && !isRecognizingRef.current) {
+        try {
           recognition.start();
-          console.log("Recognitiom requested to start")
-        }catch(e){
-          if(e.name!== "InvalidStateError"){
+          console.log("Recognitiom requested to start");
+        } catch (e) {
+          if (e.name !== "InvalidStateError") {
             console.error(e);
           }
         }
       }
-    },1000)
+    }, 1000);
 
     // const safeRecognition = () => {
     //   if (!isSpeakingRef.current && !isRecognizingRef.current) {
@@ -155,36 +153,36 @@ const Home = () => {
     //   }
     // };
 
-    recognition.onend=()=>{
-      isRecognizingRef.current=false;
+    recognition.onend = () => {
+      isRecognizingRef.current = false;
       setListening(false);
-      if(isMounted && isSpeakingRef.current){
-        setTimeout(()=>{
-          if(isMounted){
-            try{
+      if (isMounted && isSpeakingRef.current) {
+        setTimeout(() => {
+          if (isMounted) {
+            try {
               recognition.start();
               console.log("Recognition restarted");
-            }catch(e){
-              if(e.name!== "InvalidStateError") console.error(e);
+            } catch (e) {
+              if (e.name !== "InvalidStateError") console.error(e);
             }
           }
-        },1000)
+        }, 1000);
       }
-    }
+    };
     recognition.onerror = (event) => {
       console.warn("Recognition error:", event.error);
       isRecognizingRef.current = false;
       setListening(false);
       if (event.error !== "aborted" && !isSpeakingRef.current && isMounted) {
         setTimeout(() => {
-       if (isMounted) {
-         try {
-           recognition.start();
-           console.log("Recognition restarted after error");
-         } catch (e) {
-           if (e.name !== "InvalidStateError") console.error(e);
-         }
-       }
+          if (isMounted) {
+            try {
+              recognition.start();
+              console.log("Recognition restarted after error");
+            } catch (e) {
+              if (e.name !== "InvalidStateError") console.error(e);
+            }
+          }
         }, 1000);
       }
     };
@@ -222,24 +220,18 @@ const Home = () => {
     //   }
     // }, 10000);
 
-    window.speechSynthesis.onvoiceschanged=()=>{
-      const greeting=new SpeechSynthesisUtterance
-      (`Hello ${userData.name}, what can I help you?`);
-      greeting.lang='hi-IN';
-      greeting.onend=()=>{
-        startTimeout();
-      };
-      window.speechSynthesis.speak(greeting);
-
-    }
+    const greeting = new SpeechSynthesisUtterance(
+      `Hello ${userData.name}, what can I help you?`,
+    );
+    greeting.lang = "hi-IN";
+    window.speechSynthesis.speak(greeting);
 
     return () => {
-      isMounted=false;
+      isMounted = false;
       clearTimeout(startTimeout);
       recognition.stop();
       setListening(false);
       isRecognizingRef.current = false;
-      
     };
   }, []);
 
@@ -274,7 +266,7 @@ const Home = () => {
         <div className="w-full h-[2px] bg-gray-400">
           <h1 className="text-white font-semibold text-[19px]">History</h1>
           <div className="w-fill h-[400px] gap-[20px] overflow-y-auto flex flex-col  ">
-            {userData.history?.map((his,index) => (
+            {userData.history?.map((his, index) => (
               <span key={index} className="text-gray-200 text-[18px] truncate">
                 {his}
               </span>
