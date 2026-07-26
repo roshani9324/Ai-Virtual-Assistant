@@ -244,16 +244,16 @@ const Home = () => {
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#02023d] flex justify-center items-center flex-col gap-[15px]  ">
       <HiMenuAlt3
         onClick={() => setHam(true)}
-        className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+        className="lg:flex text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
       />
       <div
-        className={`absolute top-0 w-full h-full 
+        className={`absolute top-0 w-full h-full lg:flex
       bg-[#00000053]  backdrop-blur-lg p-[20px] flex 
        flex-col gap-[20px] items-start ${ham ? "translate-x-0" : "translate-x-full"} transition-transform`}
       >
         <RxCross2
           onClick={() => setHam(false)}
-          className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+          className="lg:flex text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
         />
 
         <button
