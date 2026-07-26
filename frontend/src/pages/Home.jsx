@@ -209,6 +209,11 @@ const Home = () => {
         handleCommand(data);
         setAiText(data.response);
         setUserText("");
+
+        setUserData((prev) => ({
+          ...prev,
+          history: [...(prev.history || []), transcript],
+        }));
       }
     };
 
