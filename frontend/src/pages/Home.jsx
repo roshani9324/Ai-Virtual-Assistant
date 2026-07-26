@@ -14,6 +14,7 @@ const Home = () => {
     useContext(userDataContext);
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
+  const [ham,setHam]=useState(false)
 
   const [userText, setUserText] = useState("");
   const [aiText, setAiText] = useState("");
@@ -37,12 +38,13 @@ const Home = () => {
     }
   };
   const startRecognition = () => {
+    if(!isSpeakingRef.curent && !isRecognizingRef.current)
     try {
       recognitionRef.current?.start();
-      setListening(true);
+      console.log("Recognition requested to start")
     } catch (error) {
-      if (!error.message.includes("start")) {
-        console.log("Recognition error:", error);
+      if (!error.name!=="InvalidStateError") {
+        console.log("start error:", error);
       }
     }
   };
@@ -61,8 +63,11 @@ const Home = () => {
     utterence.onend = () => {
       setAiText("")
       isSpeakingRef.current = false;
-      startRecognition();
+      setTimeout(()=>{
+        startRecognition();
+      },800)
     };
+    synth.cancle();
     synth.speak(utterence);
   };
 
@@ -98,48 +103,88 @@ const Home = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
+
     recognition.continuous = true;
     recognition.lang = "en-US";
+    recognition.interimResults=false
 
     recognitionRef.current = recognition;
+    let isMounted =true;
 
-
-    const safeRecognition = () => {
-      if (!isSpeakingRef.current && !isRecognizingRef.current) {
-        try {
+    const startTimeout =setTimeout(()=>{
+      if(isMounted && !isSpeakingRef.current && 
+        !isRecognizingRef.current){
+        try{
           recognition.start();
-          console.log("Recognition requested to start");
-        } catch (error) {
-          if (error.name !== "InvalidStateError") {
-            console.error("start error:", error);
+          console.log("Recognitiom requested to start")
+        }catch(e){
+          if(e.name!== "InvalidStateError"){
+            console.error(e);
           }
         }
       }
-    };
+    },1000)
+
+    // const safeRecognition = () => {
+    //   if (!isSpeakingRef.current && !isRecognizingRef.current) {
+    //     try {
+    //       recognition.start();
+    //       console.log("Recognition requested to start");
+    //     } catch (error) {
+    //       if (error.name !== "InvalidStateError") {
+    //         console.error("start error:", error);
+    //       }
+    //     }
+    //   }
+    // };
 
     recognition.onstart = () => {
       console.log("Recognition started");
       isRecognizingRef.current = true;
       setListening(true);
     };
-    recognition.onend = () => {
-      console.log("Recognition ended");
-      isRecognizingRef.current = false;
-      setListening(false);
+    // recognition.onend = () => {
+    //   console.log("Recognition ended");
+    //   isRecognizingRef.current = false;
+    //   setListening(false);
 
-      if (!isSpeakingRef.current) {
-        setTimeout(() => {
-          safeRecognition();
-        }, 1000);
+    //   if (!isSpeakingRef.current) {
+    //     setTimeout(() => {
+    //       safeRecognition();
+    //     }, 1000);
+    //   }
+    // };
+
+    recognition.onend=()=>{
+      isRecognizingRef.current=false;
+      setListening(false);
+      if(isMounted && isSpeakingRef.current){
+        setTimeout(()=>{
+          if(isMounted){
+            try{
+              recognition.start();
+              console.log("Recognition restarted");
+            }catch(e){
+              if(e.name!== "InvalidStateError") console.error(e);
+            }
+          }
+        },1000)
       }
-    };
+    }
     recognition.onerror = (event) => {
       console.warn("Recognition error:", event.error);
       isRecognizingRef.current = false;
       setListening(false);
-      if (event.error !== "aborted" && !isSpeakingRef.current) {
+      if (event.error !== "aborted" && !isSpeakingRef.current && isMounted) {
         setTimeout(() => {
-          safeRecognition();
+       if (isMounted) {
+         try {
+           recognition.start();
+           console.log("Recognition restarted after error");
+         } catch (e) {
+           if (e.name !== "InvalidStateError") console.error(e);
+         }
+       }
         }, 1000);
       }
     };
@@ -157,11 +202,11 @@ const Home = () => {
         isRecognizingRef.current = false;
         setListening(false);
         const data = await getGeminiResponse(transcript);
-        if (!data) {
-          console.log("No response from assistant, restarting recognition");
-          startRecognition();
-          return;
-        }
+        // if (!data) {
+        //   console.log("No response from assistant, restarting recognition");
+        //   startRecognition();
+        //   return;
+        // }
         //console.log(data);
         handleCommand(data);
         setAiText(data.response);
@@ -171,38 +216,71 @@ const Home = () => {
 
     recognition.start();
 
-    const fallback = setInterval(() => {
-      if (!isSpeakingRef.current && !isRecognizingRef.current) {
-        safeRecognition();
-      }
-    }, 10000);
+    // const fallback = setInterval(() => {
+    //   if (!isSpeakingRef.current && !isRecognizingRef.current) {
+    //     safeRecognition();
+    //   }
+    // }, 10000);
+
+    window.speechSynthesis.onvoiceschanged=()=>{
+      const greeting=new SpeechSynthesisUtterance
+      (`Hello ${userData.name}, what can I help you?`);
+      greeting.lang='hi-IN';
+      greeting.onend=()=>{
+        startTimeout();
+      };
+      window.speechSynthesis.speak(greeting);
+
+    }
 
     return () => {
+      isMounted=false;
+      clearTimeout(startTimeout);
       recognition.stop();
       setListening(false);
       isRecognizingRef.current = false;
-      clearInterval(fallback);
+      
     };
   }, []);
 
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#02023d] flex justify-center items-center flex-col gap-[15px]  ">
-      <HiMenuAlt3 className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]" />
-      <div className="absolute top-0 w-full h-full bg-[#00000053] flex flex-col gap-[20px] backdrop-blur-lg p-[20px]">
-        <RxCross2 className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]" />
+      <HiMenuAlt3
+        onClick={() => setHam(true)}
+        className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+      />
+      <div
+        className={`absolute top-0 w-full h-full 
+      bg-[#00000053]  backdrop-blur-lg p-[20px] flex lg:hidden
+       flex-col gap-[20px] items-start ${ham ? "translate-x-0" : "translate-x-full"} transition-transform`}
+      >
+        <RxCross2
+          onClick={() => setHam(false)}
+          className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+        />
 
         <button
           onClick={handleLogout}
-          className=" cursor-pointer absolute top-[20px] right-[20px] min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
+          className="cursor-pointer  min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
         >
           Logout
         </button>
         <button
           onClick={() => navigate("/customize")}
-          className=" cursor-pointer absolute top-[100px] px-[20px] py-[10px] right-[20px] min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
+          className=" cursor-pointer  px-[20px] py-[10px]  min-w-[150px] h-[60px]  text-black font-semibold bg-white rounded-full text-[19px] "
         >
           Customize your Assistant
         </button>
+        <div className="w-full h-[2px] bg-gray-400">
+          <h1 className="text-white font-semibold text-[19px]">History</h1>
+          <div className="w-fill h-[400px] gap-[20px] overflow-y-auto flex flex-col  ">
+            {userData.history?.map((his,index) => (
+              <span key={index} className="text-gray-200 text-[18px] truncate">
+                {his}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className=" w-[300px] h-[400px] flex justify-center items-center overflow-hidden rounded-4xl shadow-lg">
