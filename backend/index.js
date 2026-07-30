@@ -16,10 +16,15 @@ dns.setServers(["8.8.8.8"]);
 
 
 const app=express();
-app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true
-}))
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://ai-virtual-assistant-smoky.vercel.app/signup",
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRouter);
