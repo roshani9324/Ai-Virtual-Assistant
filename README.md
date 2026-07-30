@@ -18,14 +18,13 @@ A full-stack, voice-enabled AI Virtual Assistant built with the **MERN stack**, 
 
 ---
 
-## 🖼️ Screenshots
-
 ### Sign Up Page
 <img width="1917" height="873" alt="image" src="https://github.com/user-attachments/assets/4f1af9d8-02e8-4bd9-aaee-99b60efae4d8" />
 
 
 ### Customize Assistant Image
-![Customize Assistant](./screenshots/customize.png)
+<img width="1851" height="870" alt="image" src="https://github.com/user-attachments/assets/1bee45f9-966f-45ea-8a76-e7ee33458d0c" />
+
 
 ---
 
