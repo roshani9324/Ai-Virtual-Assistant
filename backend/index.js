@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://ai-virtual-assistant-smoky.vercel.app/signup",
+      "https://ai-virtual-assistant-smoky.vercel.app",
     ],
     credentials: true,
   }),
