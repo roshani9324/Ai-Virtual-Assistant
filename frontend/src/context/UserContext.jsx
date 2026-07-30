@@ -5,7 +5,8 @@ export const userDataContext = createContext();
 import { useState, useEffect } from "react";
 
 const UserContext = ({ children }) => {
-  const serverUrl = "http://localhost:8000";
+  //const serverUrl = "http://localhost:8000";
+  const serverUrl = "https://ai-virtual-assistant-6iz1.onrender.com";
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [frontendImage, setFrontendImage] = useState(null);
