@@ -81,53 +81,6 @@ AI-Virtual-Assistant/
 
 ---
 
-## ⚙️ Getting Started
-
-### Prerequisites
-- Node.js installed
-- MongoDB Atlas account (or local MongoDB)
-- Google Gemini API key
-- Cloudinary account (for image uploads)
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/roshani9324/Ai-Virtual-Assistant.git
-cd Ai-Virtual-Assistant
-```
-
-### 2. Backend Setup
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file inside `backend/`:
-```
-PORT=8000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-```
-
-Run the backend:
-```bash
-npm run dev
-```
-
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
----
-
 ## 🗣️ How It Works
 
 1. **Sign up / Sign in** to create your account
